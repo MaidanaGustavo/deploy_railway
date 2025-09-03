@@ -55,7 +55,7 @@ export default function LoginForm({ onLogin, onSwitchToRegister, loading = false
       <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm">
         <div className="mb-6 text-center">
           <h1 className="text-2xl font-semibold text-neutral-900 mb-2">
-            Entrar no Rami
+            Entrar
           </h1>
           <p className="text-sm text-neutral-600">
             Acesse sua conta para continuar

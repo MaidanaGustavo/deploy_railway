@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
 import { useAuth } from '../hooks/useAuth';
+import Logo from './Logo';
 
 export default function AuthScreen() {
   const [isLogin, setIsLogin] = useState(true);
@@ -31,6 +32,10 @@ export default function AuthScreen() {
   return (
     <div className="min-h-screen bg-neutral-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
+        <div className="mb-6 text-center">
+          <Logo withText size={54} />
+          <p className="mt-1 text-sm text-neutral-600">Seu companheiro no campo.</p>
+        </div>
         {isLogin ? (
           <LoginForm
             onLogin={handleLogin}

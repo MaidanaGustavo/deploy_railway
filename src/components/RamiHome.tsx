@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { getAreas } from '../services/areas';
 import { Area } from '../types/area';
+import Logo, { LogoMark } from './Logo';
 
 // Mock de dados — substitua depois por dados reais da API
 const areasMock = [
@@ -31,7 +32,9 @@ export default function RamiHome({ onNewPlanting, onOpenArea }: { onNewPlanting?
       <header className="sticky top-0 z-10 backdrop-blur supports-[backdrop-filter]:bg-white/70 bg-white shadow-sm border-b border-stone-200">
         <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-xl bg-emerald-700 grid place-items-center text-white font-semibold">R</div>
+            <div className="h-9 w-9 rounded-xl bg-emerald-700 grid place-items-center text-white font-semibold">
+              <LogoMark size={20} color="#ffffff" />
+            </div>
             <div className="leading-tight">
               <p className="text-sm text-stone-500">Bem-vindo de volta</p>
               <h1 className="text-lg font-semibold text-stone-800">{firstName} – Painel do Produtor</h1>
