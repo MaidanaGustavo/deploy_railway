@@ -147,7 +147,7 @@ function WizardTransition({ idx, children }: { idx: number; children: React.Reac
 
 // -------------------- Componente Principal --------------------
 
-export default function RamiWizardApp() {
+export default function RamiWizardApp({ onExit, onComplete }: { onExit?: () => void; onComplete?: (dados: Dados) => void }) {
   const [dados, setDados] = useState<Dados>(() =>
     loadDraft() ?? {
       area: { valor: null, unidade: "m2" },
@@ -208,7 +208,7 @@ export default function RamiWizardApp() {
 
   return (
     <div className="min-h-screen bg-neutral-50 text-neutral-900">
-      <Header progresso={progresso} />
+      <WizardHeader progresso={progresso} onExit={onExit} />
 
       <div className="mx-auto w-full max-w-md px-4 pb-28 pt-4">
         <OfflineBadge />
@@ -245,7 +245,13 @@ export default function RamiWizardApp() {
         {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
       </div>
 
-      <FooterNav onBack={back} onNext={next} canBack={current > 0} isLast={stepId === "revisao"} />
+      <FooterNav
+        onBack={back}
+        onNext={next}
+        onComplete={onComplete ? () => onComplete(dados) : undefined}
+        canBack={current > 0}
+        isLast={stepId === "revisao"}
+      />
 
       {/* keyframes locais para pequenos toques visuais */}
       <style>{`
@@ -260,12 +266,24 @@ export default function RamiWizardApp() {
 
 // -------------------- Subcomponentes de UI --------------------
 
-function Header({ progresso }: { progresso: string }) {
+function WizardHeader({ progresso, onExit }: { progresso: string; onExit?: () => void }) {
   const [done, total] = progresso.split("/").map(Number);
   const pct = Math.max(0, Math.min(100, Math.round((done / total) * 100)));
   return (
     <header className="sticky top-0 z-30 w-full border-b border-neutral-200 bg-white/80 backdrop-blur">
       <div className="mx-auto flex h-14 max-w-md items-center gap-2 px-4">
+        {onExit && (
+          <button
+            onClick={onExit}
+            className="p-2 -ml-2 rounded-xl text-neutral-700 hover:bg-neutral-100 active:translate-y-px"
+            aria-label="Voltar para o início"
+            title="Voltar"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M15 18l-6-6 6-6"/>
+            </svg>
+          </button>
+        )}
         <div className="h-1 w-full overflow-hidden rounded bg-neutral-200">
           <div
             className="h-full bg-emerald-600 transition-all duration-300"
@@ -312,7 +330,7 @@ function Label({ children, hint }: { children: React.ReactNode; hint?: string })
   );
 }
 
-function FooterNav({ onBack, onNext, canBack, isLast }: { onBack: () => void; onNext: () => void; canBack: boolean; isLast: boolean }) {
+function FooterNav({ onBack, onNext, onComplete, canBack, isLast }: { onBack: () => void; onNext: () => void; onComplete?: () => void; canBack: boolean; isLast: boolean }) {
   return (
     <div className="fixed inset-x-0 bottom-0 z-40 border-t border-neutral-200 bg-white/90 p-3 backdrop-blur">
       <div className="mx-auto flex w-full max-w-md gap-2">
@@ -327,7 +345,13 @@ function FooterNav({ onBack, onNext, canBack, isLast }: { onBack: () => void; on
           Voltar
         </button>
         <button
-          onClick={onNext}
+          onClick={() => {
+            if (isLast && onComplete) {
+              onComplete();
+            } else {
+              onNext();
+            }
+          }}
           className="h-12 flex-1 rounded-xl bg-emerald-600 px-4 text-base font-medium text-white shadow-sm transition active:translate-y-px hover:brightness-110"
         >
           {isLast ? "Confirmar" : "Próximo"}
@@ -357,7 +381,7 @@ function CardOption({ title, subtitle, selected, onClick }: { title: string; sub
       onClick={onClick}
       className={clsx(
         "w-full rounded-2xl border p-4 text-left transition-colors",
-        selected ? "border-emerald-600 bg-emerald-50" : "border-neutral-200 bg-white hover:bg-neutral-50"
+        selected ? "border-emerald-600 bg-emerald-50" : "border-neutral-200 bg-white hover:bg-neutraAl-50"
       )}
     >
       <div className="flex items-center justify-between">
