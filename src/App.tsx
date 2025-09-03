@@ -3,6 +3,7 @@ import RamiWizardWireframe from './RamiWizardWireframe'
 import AuthScreen from './components/AuthScreen'
 // import Header from './components/Header'
 import RamiHome from './components/RamiHome'
+import AreaCover from './components/AreaCover'
 import { useState } from 'react'
 import { addArea } from './services/areas'
 import type { Area } from './types/area'
@@ -10,7 +11,8 @@ import { useAuth } from './hooks/useAuth'
 
 export default function App() {
   const { isAuthenticated } = useAuth();
-  const [screen, setScreen] = useState<'home' | 'wizard'>('home')
+  const [screen, setScreen] = useState<'home' | 'wizard' | 'area'>('home')
+  const [activeAreaId, setActiveAreaId] = useState<string | null>(null)
   const { user } = useAuth();
 
   if (!isAuthenticated) {
@@ -40,6 +42,7 @@ export default function App() {
             status: 'Cadastrada',
             progresso: 0,
             createdAt: new Date().toISOString(),
+            geo: dados.localizacao.geo ?? null,
           };
           addArea(user.id, novaArea);
           // Limpar rascunho do wizard
@@ -50,5 +53,14 @@ export default function App() {
     )
   }
 
-  return <RamiHome onNewPlanting={() => setScreen('wizard')} />
+  if (screen === 'area' && activeAreaId) {
+    return <AreaCover areaId={activeAreaId} onBack={() => setScreen('home')} />
+  }
+
+  return (
+    <RamiHome
+      onNewPlanting={() => setScreen('wizard')}
+      onOpenArea={(id) => { setActiveAreaId(id); setScreen('area'); }}
+    />
+  )
 }

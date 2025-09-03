@@ -8,5 +8,5 @@ export interface Area {
   status: string;
   progresso: number;
   createdAt: string;
+  geo?: { lat: number; lng: number } | null;
 }
-

@@ -10,7 +10,7 @@ const areasMock = [
   { id: 'a3', nome: 'Fazendinha Boa Esperança', cultura: 'Cebolinha', ha: 2.0, status: 'Adubação pendente', progresso: 22 },
 ];
 
-export default function RamiHome({ onNewPlanting }: { onNewPlanting?: () => void }) {
+export default function RamiHome({ onNewPlanting, onOpenArea }: { onNewPlanting?: () => void; onOpenArea?: (id: string) => void }) {
   const { user, logout } = useAuth();
   const firstName = user?.name?.split(' ')[0] ?? 'Produtor';
   const [areas, setAreas] = useState<Area[]>([]);
@@ -90,7 +90,7 @@ export default function RamiHome({ onNewPlanting }: { onNewPlanting?: () => void
 
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {areas.map((a) => (
-              <AreaCard key={a.id} area={a} />
+              <AreaCard key={a.id} area={a} onOpen={onOpenArea} />
             ))}
 
             {/* Card vazio quando não há áreas */}
@@ -153,7 +153,7 @@ function QuickAction({ icon, label }: { icon: React.ReactNode; label: string }) 
   );
 }
 
-function AreaCard({ area }: { area: Area }) {
+function AreaCard({ area, onOpen }: { area: Area; onOpen?: (id: string) => void }) {
   return (
     <article className="group rounded-2xl bg-white border border-stone-200 hover:border-stone-300 shadow-sm hover:shadow-md transition overflow-hidden">
       {/* Capa */}
@@ -188,8 +188,8 @@ function AreaCard({ area }: { area: Area }) {
         </div>
 
         <div className="mt-4 flex items-center justify-end gap-2">
-          <button className="text-sm px-3 py-2 rounded-xl border border-stone-300 hover:bg-stone-50 transition">Detalhes</button>
-          <button className="text-sm px-3 py-2 rounded-xl bg-stone-900 text-white hover:opacity-95 transition">Abrir</button>
+          <button onClick={() => onOpen?.(area.id)} className="text-sm px-3 py-2 rounded-xl border border-stone-300 hover:bg-stone-50 transition">Detalhes</button>
+          <button onClick={() => onOpen?.(area.id)} className="text-sm px-3 py-2 rounded-xl bg-stone-900 text-white hover:opacity-95 transition">Abrir</button>
         </div>
       </div>
     </article>
